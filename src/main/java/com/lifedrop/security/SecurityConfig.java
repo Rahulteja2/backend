@@ -16,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -53,14 +52,7 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        List<String> origins = Arrays.stream(allowedOrigins.split(","))
-            .map(String::trim)
-            .filter(origin -> !origin.isEmpty())
-            .toList();
-        if (origins.isEmpty() || origins.contains("*")) {
-            throw new IllegalStateException("CORS_ALLOWED_ORIGINS must contain explicit origins and cannot contain '*'");
-        }
-
+        List<String> origins = CorsOrigins.parse(allowedOrigins, false);
         CorsConfiguration c = new CorsConfiguration();
         c.setAllowedOrigins(origins);
         c.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

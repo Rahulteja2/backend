@@ -12,12 +12,18 @@ import java.util.Date;
 
 @Service
 public class JwtService {
+    private static final int MINIMUM_HMAC_KEY_BYTES = 32;
+
     private final SecretKey key;
     private final long expirationMs;
 
     public JwtService(@Value("${jwt.secret}") String secret,
                       @Value("${jwt.expiration-ms}") long expirationMs) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
+        if (secretBytes.length < MINIMUM_HMAC_KEY_BYTES) {
+            throw new IllegalArgumentException("JWT_SECRET must contain at least 32 UTF-8 bytes for HMAC signing");
+        }
+        this.key = Keys.hmacShaKeyFor(secretBytes);
         this.expirationMs = expirationMs;
     }
 
