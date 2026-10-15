@@ -94,7 +94,7 @@ public class ProductionEnvironmentValidator {
                 throw new IllegalArgumentException();
             }
 
-            Set<String> secureModes = Set.of("verify_identity", "verify_ca");
+            Set<String> secureModes = Set.of("verify_identity", "verify_ca", "required");
             boolean usesVerifiedTls = uri.getRawQuery() != null
                 && java.util.Arrays.stream(uri.getRawQuery().split("&"))
                     .map(parameter -> parameter.split("=", 2))
